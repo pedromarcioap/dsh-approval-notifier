@@ -159,7 +159,8 @@ scenario('página sem interação pendente', () => {
   const page = createPage();
   const runtime = createChrome();
   load({ document: page.document, chrome: runtime.chrome });
-  assert(runtime.messages.length === 0, 'nenhuma mensagem ao carregar');
+  assert(messagesByType(runtime, 'interaction-pending').length === 0, 'nenhuma notificação ao carregar');
+  assert(messagesByType(runtime, 'hello').length === 1, 'content script se apresenta ao service worker');
   assert(page.document.title === 'DeepSeek Harness', 'título intacto');
 });
 
@@ -305,7 +306,7 @@ scenario('avisos desativados nas preferências', () => {
   const script = load({ document: page.document, chrome: runtime.chrome });
   script.tick();
 
-  assert(runtime.messages.length === 0, 'nenhuma mensagem com enabled: false');
+  assert(messagesByType(runtime, 'interaction-pending').length === 0, 'nenhuma notificação com enabled: false');
 });
 
 scenario('modo "só fora de foco"', () => {
@@ -320,7 +321,7 @@ scenario('modo "só fora de foco"', () => {
   const script = load({ document: page.document, chrome: runtime.chrome });
 
   script.tick();
-  assert(runtime.messages.length === 0, 'silencia com a janela em foco');
+  assert(messagesByType(runtime, 'interaction-pending').length === 0, 'silencia com a janela em foco');
 
   page.state.focused = false;
   script.blur();

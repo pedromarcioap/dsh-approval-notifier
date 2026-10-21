@@ -19,6 +19,7 @@
   const SCROLL_SELECTORS = ['[data-approval-scroll]', '[data-question-scroll]'];
   const TITLE_MARK = '⚠ ';
   const MESSAGE_LIMIT = 300;
+  const BANNER_ATTR = 'data-dsh-notifier-stale';
 
   const settings = { enabled: true, onlyWhenUnfocused: false };
   /** Interações já avisadas nesta página, para não repetir a cada mutação. */
@@ -27,6 +28,7 @@
   let titleDirty = false;
   let scheduled = false;
   let audioContext = null;
+  let bannerShown = false;
 
   /* ------------------------------------------------------------------ */
   /* Preferências                                                        */
@@ -56,21 +58,73 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* Aviso de contexto órfão                                             */
+  /* ------------------------------------------------------------------ */
+
+  /**
+   * Recarregar a extensão no chrome://extensions invalida o contexto deste
+   * script nas abas já abertas: ele continua na página, mas não fala mais com
+   * o service worker. Sem isto, a extensão falharia em silêncio.
+   */
+  function showStaleBanner() {
+    if (bannerShown) return;
+    bannerShown = true;
+    try {
+      if (document.querySelector(`[${BANNER_ATTR}]`) !== null) return;
+      const banner = document.createElement('div');
+      banner.setAttribute(BANNER_ATTR, '');
+      banner.textContent = 'Aviso de aprovação inativo — recarregue a página (F5)';
+      banner.setAttribute(
+        'style',
+        [
+          'position:fixed',
+          'z-index:2147483647',
+          'right:16px',
+          'bottom:16px',
+          'padding:10px 14px',
+          'border-radius:10px',
+          'border:1px solid #E6A447',
+          'background:#1E2128',
+          'color:#F4E3C8',
+          'font:500 13px/1.4 "Segoe UI",system-ui,sans-serif',
+          'box-shadow:0 8px 24px rgba(0,0,0,.45)',
+          'pointer-events:none',
+        ].join(';'),
+      );
+      (document.body ?? document.documentElement).appendChild(banner);
+    } catch {
+      /* se nem o aviso visual for possível, seguimos calados */
+    }
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Comunicação com o service worker                                    */
   /* ------------------------------------------------------------------ */
 
-  function send(message) {
+  function hasRuntime() {
     try {
-      // Depois de recarregar a extensão, o contexto antigo perde runtime.id.
-      if (!chrome.runtime?.id) return;
+      return Boolean(chrome.runtime?.id);
+    } catch {
+      return false;
+    }
+  }
+
+  function send(message) {
+    if (!hasRuntime()) {
+      showStaleBanner();
+      return false;
+    }
+    try {
       const result = chrome.runtime.sendMessage(message);
       if (result && typeof result.catch === 'function') {
         result.catch(() => {
           /* service worker dormindo: o toast é um extra, não um requisito */
         });
       }
+      return true;
     } catch {
-      /* contexto invalidado */
+      showStaleBanner();
+      return false;
     }
   }
 
@@ -248,6 +302,10 @@
   window.addEventListener('blur', schedule);
   window.addEventListener('focus', schedule);
   document.addEventListener('visibilitychange', schedule);
+
+  // Apresenta-se ao service worker: o popup usa isso para saber se o script
+  // está vivo em alguma aba.
+  send({ type: 'hello' });
 
   // A interação pode já estar na tela quando este script entra (reload).
   sync();

@@ -33,14 +33,33 @@
       </label>
     </section>
 
+    <section class="diagnostics" aria-label="Diagnóstico">
+      <p class="diagnostics-title">Diagnóstico</p>
+      <dl class="diagnostics-list">
+        <div>
+          <dt>Script ativo em</dt>
+          <dd id="diag-tabs">—</dd>
+        </div>
+        <div>
+          <dt>Pedidos pendentes</dt>
+          <dd id="diag-pending">—</dd>
+        </div>
+        <div>
+          <dt>Último aviso</dt>
+          <dd id="diag-last">—</dd>
+        </div>
+      </dl>
+      <p class="diagnostics-hint" id="diag-hint"></p>
+    </section>
+
     <p class="status" id="status" role="status" aria-live="polite">Verificando…</p>
 
     <button id="test" type="button" class="button">Enviar notificação de teste</button>
 
     <p class="hint">
-      Para ver o alerta, recarregue a página do DSH depois de instalar a extensão.
-      Se nada aparecer, verifique se o Windows não está bloqueando notificações do
-      Chrome (Assistente de Foco).
+      Depois de instalar ou atualizar a extensão, recarregue a página do DSH.
+      Se nada aparecer, verifique se o Windows não está bloqueando notificações
+      do Chrome (Assistente de Foco).
     </p>
 
     <script src="popup.js"></script>

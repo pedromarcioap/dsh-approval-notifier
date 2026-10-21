@@ -1,9 +1,13 @@
 /**
- * DSH — Aviso de aprovação (service worker).
+ * DSH — Aviso de aprovação (background.js / service worker).
  *
  * O content script avisa quando uma interação do DeepSeek Harness começa
  * (`interaction-pending`) ou termina (`interaction-resolved`). Aqui mantemos
  * uma única notificação do Chrome por pedido — no Windows ela vira um toast.
+ *
+ * Também guardamos um diagnóstico mínimo (abas com o script ativo e o instante
+ * do último aviso) que o popup mostra, para separar "não avisou" de
+ * "avisou mas o Windows não exibiu".
  */
 
 const NOTIFICATION_PREFIX = 'dsh-approval:';
@@ -21,12 +25,12 @@ const FALLBACK_TITLE = 'DSH aguardando você';
 const pendingInteractions = new Map();
 /** id da notificação -> aba de origem */
 const notificationTabs = new Map();
-
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get({ enabled: true }, ({ enabled }) => {
-    chrome.storage.local.set({ enabled: Boolean(enabled) });
-  });
-});
+/** abas onde o content script se apresentou -> instante do hello */
+const liveTabs = new Map();
+/** instante do último aviso efetivamente criado */
+let lastNotificationAt = null;
+/** último erro que impediu um aviso */
+let lastError = null;
 
 async function isEnabled() {
   const { enabled = true } = await chrome.storage.local.get({ enabled: true });
@@ -68,6 +72,19 @@ async function createNotification(notificationId, title, message) {
   });
 }
 
+function pruneLiveTabs() {
+  // Abas fechadas não avisam: descartamos quem sumiu da lista do Chrome.
+  chrome.tabs
+    .query({})
+    .then((tabs) => {
+      const open = new Set(tabs.map((tab) => tab.id));
+      for (const id of liveTabs.keys()) {
+        if (!open.has(id)) liveTabs.delete(id);
+      }
+    })
+    .catch(() => {});
+}
+
 async function showPending({ kind, key, text, tabId }) {
   if (!(await isEnabled())) return false;
 
@@ -81,11 +98,14 @@ async function showPending({ kind, key, text, tabId }) {
   try {
     await createNotification(notificationId, titleFor(kind), message);
     pendingInteractions.set(mapId, notificationId);
+    lastNotificationAt = Date.now();
+    lastError = null;
     if (typeof tabId === 'number' && tabId >= 0) {
       notificationTabs.set(notificationId, tabId);
     }
     return true;
   } catch (error) {
+    lastError = String(error);
     console.error('[dsh-approval-notifier] falha ao criar notificação', error);
     return false;
   }
@@ -147,6 +167,14 @@ async function handleMessage(message, sender) {
   if (!message || typeof message !== 'object') return { ok: false };
 
   switch (message.type) {
+    case 'hello': {
+      const tabId = sender?.tab?.id;
+      if (typeof tabId === 'number') {
+        liveTabs.set(tabId, Date.now());
+        pruneLiveTabs();
+      }
+      return { ok: true };
+    }
     case 'interaction-pending':
       return {
         ok: await showPending({
@@ -166,11 +194,14 @@ async function handleMessage(message, sender) {
           'Aviso de teste',
           'Se você está vendo isto, os avisos estão funcionando.',
         );
+        lastNotificationAt = Date.now();
+        lastError = null;
         setTimeout(() => {
           chrome.notifications.clear(notificationId).catch(() => {});
         }, 8000);
         return { ok: true };
       } catch (error) {
+        lastError = String(error);
         console.error('[dsh-approval-notifier] teste falhou', error);
         return { ok: false, error: String(error) };
       }
@@ -180,6 +211,9 @@ async function handleMessage(message, sender) {
         ok: true,
         enabled: await isEnabled(),
         pending: pendingInteractions.size,
+        tabs: liveTabs.size,
+        lastNotificationAt,
+        lastError,
       };
     default:
       return { ok: false, error: 'unknown-message' };
@@ -190,6 +224,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   handleMessage(message, sender)
     .then(sendResponse)
     .catch((error) => {
+      lastError = String(error);
       console.error('[dsh-approval-notifier] mensagem falhou', error);
       sendResponse({ ok: false, error: String(error) });
     });

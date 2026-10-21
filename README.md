@@ -62,6 +62,10 @@ basta descompactar e carregar a pasta.
 2. Windows → Configurações → Sistema → Notificações: permita o Chrome e
    desative o **Assistente de Foco** durante o horário de trabalho.
 3. Confirme que a porta no `manifest.json` bate com a do harness (hoje `3080`).
+4. Se um aviso laranja aparecer no canto da página dizendo **Aviso de aprovação
+   inativo**, a extensão foi recarregada depois da página: aperte `F5`.
+   O popup também mostra há quanto tempo foi o último aviso e se há alguma aba
+   conversando com a extensão.
 
 ## Limitações
 
@@ -120,6 +124,12 @@ stable attribute, so nothing depends on generated CSS classes:
 
 A packaged `.zip` is available under
 [Releases](https://github.com/pedromarcioap/dsh-approval-notifier/releases).
+
+## Troubleshooting
+
+If an orange banner shows **Aviso de aprovação inativo**, the extension was
+reloaded after the page: press F5. The popup also reports how long ago the
+last notification happened and whether any tab is talking to the extension.
 
 ## Settings (popup)
 

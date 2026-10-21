@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "DSH — Aviso de aprovação",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Mostra uma notificação do Chrome/Windows quando o DeepSeek Harness está esperando sua aprovação.",
   "permissions": ["notifications", "storage"],
   "background": {
