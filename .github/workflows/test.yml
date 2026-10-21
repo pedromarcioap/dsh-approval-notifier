@@ -1,0 +1,48 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: testes do content script
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Valida o manifest (JSON e campos obrigatórios)
+        run: |
+          node -e "
+          const fs = require('fs');
+          const m = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          const required = ['manifest_version', 'name', 'version', 'background', 'content_scripts'];
+          for (const field of required) {
+            if (!(field in m)) throw new Error('campo ausente no manifest: ' + field);
+          }
+          if (m.manifest_version !== 3) throw new Error('manifest_version deve ser 3');
+          console.log('manifest ok — versão', m.version);
+          "
+
+      - name: Checa a sintaxe dos scripts
+        run: |
+          for file in background.js content.js popup.js; do
+            node --check "$file"
+            echo "ok $file"
+          done
+
+      - name: Roda os testes
+        run: node test/content.test.mjs

@@ -7,6 +7,7 @@ node_modules/
 
 # Ferramentas locais (gh CLI baixado para publicar)
 .tools/
+dist/
 
 # Sistema operacional
 Thumbs.db
