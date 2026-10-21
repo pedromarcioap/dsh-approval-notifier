@@ -27,7 +27,7 @@ plugin/
 ├── client/
 │   ├── package.json      # dsh.client: inject uiSession, platform web
 │   └── lib/client.js     # o plugin: assina sessionStatus e notifica
-└── test/client.test.mjs  # 21 verificações, sem navegador
+└── test/client.test.mjs  # 42 verificações, sem navegador
 ```
 
 Dois pacotes seguem a convenção do ecossistema: o **bundle** é a camada de
@@ -38,11 +38,17 @@ insere no profile.
 
 1. `apply(ctx, config)` assina `ctx.uiSession.sessionStatus` — um snapshot
    `Map<sessionId, { pendingInteraction, running }>`.
-2. A primeira sessão com `pendingInteraction` vira um aviso.
-3. A chave do pedido evita duplicar; quando ela muda ou some, a notificação
-   anterior fecha.
-4. Sem permissão de notificação, a extensão ainda marca o título da aba com
-   `⚠`, então nunca fica totalmente silenciosa.
+2. Cada pedido com `pendingInteraction` é anunciado uma vez, pela chave da
+   interação; o conjunto de chaves já anunciadas evita repetir.
+3. Quando não sobra nada pendente, o aviso fecha.
+4. Sem permissão de notificação, o plugin ainda marca o título da aba com
+   `⚠`, então nunca fica totalmente silencioso.
+5. **Lembrete**: o pedido sem resposta é reexibido a cada 90s, no máximo três
+   vezes.
+6. **Agregação**: com mais de um pedido pendente, o corpo informa o total.
+7. **Horário de silêncio**: fora da janela o aviso é segurado e entregue no fim
+   dela — ou descartado, se você responder antes. Aprovação que trava o agente
+   pode furar a janela.
 
 ### Configuração
 
@@ -50,8 +56,12 @@ insere no profile.
 - id: approval-notifier
   name: 'dsh-plugin-approval-notifier-client'
   config:
-    onlyWhenUnfocused: true   # padrão: false
-    debug: false              # padrão: false (liga logs no console)
+    onlyWhenUnfocused: true    # padrão: false
+    quietEnabled: false        # padrão: false
+    quietStart: '22:00'
+    quietEnd: '08:00'
+    quietBypassApproval: true  # aprovação fura o silêncio
+    debug: false               # padrão: false (liga logs no console)
 ```
 
 Com `debug: true`, o plugin registra no console do cliente o que ele vê a cada

@@ -1,7 +1,7 @@
 {
   "name": "dsh-plugin-approval-notifier",
   "description": "Native notifications when DeepSeek Harness waits for your approval, answer, or plan review",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "lib/index.js",
   "files": [
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "dsh-plugin-approval-notifier-client": "0.1.0"
+    "dsh-plugin-approval-notifier-client": "0.1.1"
   },
   "dsh": {
     "bundle": {
