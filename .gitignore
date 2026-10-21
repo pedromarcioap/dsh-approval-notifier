@@ -1,0 +1,16 @@
+# Dependências e artefatos de build
+node_modules/
+*.log
+*.zip
+*.crx
+*.pem
+
+# Sistema operacional
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp

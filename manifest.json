@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "DSH — Aviso de aprovação",
+  "version": "1.0.0",
+  "description": "Mostra uma notificação do Chrome/Windows quando o DeepSeek Harness está esperando sua aprovação.",
+  "permissions": ["notifications", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "DSH — Aviso de aprovação",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://127.0.0.1:3080/*", "http://localhost:3080/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
