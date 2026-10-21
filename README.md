@@ -75,6 +75,16 @@ basta descompactar e carregar a pasta.
 - **Não é um canal de aprovação.** Ela avisa; a decisão continua no painel do
   chat, e cada aprovação vale uma única vez.
 
+## Plugin nativo do DSH
+
+Existe também uma versão como **plugin de cliente**, em [`plugin/`](plugin/README.md):
+em vez de observar o DOM, ela assina o snapshot de status das sessões
+(`ctx.uiSession.sessionStatus`). Não depende da porta 3080 nem da aba aberta e,
+por seguir a convenção de bundles do ecossistema, pode ser instalada pelo
+`dsh plugin add` e cadastrada nos catálogos da comunidade.
+
+Ainda não publicado no npm — veja o estado em [`plugin/README.md`](plugin/README.md).
+
 ## Desenvolvimento
 
 ```powershell
@@ -153,6 +163,16 @@ last notification happened and whether any tab is talking to the extension.
 - **DSH page only.** It does not touch other tabs or sites.
 - **Not an approval channel.** It only notifies; the decision still happens in
   the chat panel, and every approval is one-shot.
+
+## Native DSH plugin
+
+A client-plugin version lives in [`plugin/`](plugin/README.md): instead of
+observing the DOM, it subscribes to the session status snapshot
+(`ctx.uiSession.sessionStatus`). It does not depend on port 3080 or an open tab,
+and it follows the ecosystem bundle convention, so it can be installed with
+`dsh plugin add` and listed in community catalogs.
+
+Not published to npm yet — see the state in [`plugin/README.md`](plugin/README.md).
 
 ## License
 

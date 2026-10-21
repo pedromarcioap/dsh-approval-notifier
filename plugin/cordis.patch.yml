@@ -1,0 +1,6 @@
+# Aviso de aprovação: uma linha de cliente. O plugin não toca no Host.
+- insert:
+    - id: approval-notifier
+      name: 'dsh-plugin-approval-notifier-client'
+      config:
+        onlyWhenUnfocused: false

@@ -44,5 +44,11 @@ jobs:
             echo "ok $file"
           done
 
-      - name: Roda os testes
+      - name: Roda os testes da extensão
         run: node test/content.test.mjs
+
+      - name: Checa a sintaxe do plugin de cliente
+        run: node --check plugin/client/lib/client.js
+
+      - name: Roda os testes do plugin nativo
+        run: node plugin/test/client.test.mjs

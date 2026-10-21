@@ -1,0 +1,20 @@
+{
+  "name": "dsh-plugin-approval-notifier-client",
+  "description": "Browser half of the DSH approval notifier: turns pending interactions into native notifications",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "files": [
+    "lib/index.js",
+    "lib/client.js"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-session"
+      ],
+      "platform": "web"
+    }
+  }
+}
