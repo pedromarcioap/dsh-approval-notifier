@@ -27,10 +27,19 @@ Comportamento:
 
 - **Uma notificação por pedido.** Mutações repetidas do DOM não duplicam o aviso.
 - **Fecha sozinha** quando você responde, ou quando o painel sai da tela.
+- **Lembrete se ninguém responder:** o toast reaparece a cada ~90s, no máximo
+  três vezes, e para quando você responde ou fecha o aviso.
+- **Badge no ícone** com quantos pedidos esperam decisão — visível mesmo com o
+  popup fechado.
 - **Bipe curto** junto com o toast, liberado só depois de um gesto seu na página
   (exigência de autoplay do Chrome).
 - **Título da aba** ganha um `⚠ ` enquanto houver algo pendente.
 - Clicar na notificação **foca a aba** do DSH.
+- **Horário de silêncio** opcional (ver configuração): fora da janela o aviso é
+  segurado e entregue quando ela termina — ou descartado, se você responder
+  antes. Aprovações podem furar a janela, porque travam o agente.
+- Funciona em **qualquer porta** de `127.0.0.1` e `localhost`, inclusive o DSH
+  Desktop, que escolhe uma porta livre a cada execução.
 
 ## Instalação
 
@@ -54,14 +63,22 @@ basta descompactar e carregar a pasta.
 - **Só quando a janela não estiver em foco** — evita o aviso redundante quando
   você já está olhando o chat. Se um pedido chegar com a janela em foco, ele
   ainda avisa no momento em que você troca de janela.
+- **Horário de silêncio** — janela de "não perturbe" (padrão `22:00`–`08:00`,
+  desligada). Pode atravessar a meia-noite. O aviso que cair na janela fica em
+  espera, aparece no badge e é entregue no fim dela; se você responder antes,
+  nada é entregue.
+- **Aprovações furam o silêncio** — ligado por padrão: uma aprovação bloqueia o
+  agente, então vale acordar; pergunta e revisão de plano esperam a janela.
 
 ## Se a notificação não aparecer
 
-1. `chrome://settings/content/notifications` → libere o site `127.0.0.1:3080`
-   (ou o Chrome inteiro).
+1. `chrome://settings/content/notifications` → libere o site `127.0.0.1` (a
+   porta do DSH não importa: a extensão casa com qualquer porta em
+   `127.0.0.1` e `localhost`).
 2. Windows → Configurações → Sistema → Notificações: permita o Chrome e
    desative o **Assistente de Foco** durante o horário de trabalho.
-3. Confirme que a porta no `manifest.json` bate com a do harness (hoje `3080`).
+3. Confirme que a página do harness está mesmo em `127.0.0.1` ou `localhost`
+   (o DSH Desktop, por exemplo, sobe em portas aleatórias como `58426`).
 4. Se um aviso laranja aparecer no canto da página dizendo **Aviso de aprovação
    inativo**, a extensão foi recarregada depois da página: aperte `F5`.
    O popup também mostra há quanto tempo foi o último aviso e se há alguma aba

@@ -31,6 +31,27 @@
         </span>
         <input id="onlyWhenUnfocused" type="checkbox" />
       </label>
+
+      <label class="row" for="quietEnabled">
+        <span>
+          <strong>Horário de silêncio</strong>
+          <small>Fora desta janela o aviso é segurado e entregue quando ela termina.</small>
+        </span>
+        <input id="quietEnabled" type="checkbox" />
+      </label>
+
+      <div class="row quiet-range">
+        <label for="quietStart">De <input id="quietStart" type="time" value="22:00" /></label>
+        <label for="quietEnd">até <input id="quietEnd" type="time" value="08:00" /></label>
+      </div>
+
+      <label class="row" for="quietBypassApproval">
+        <span>
+          <strong>Aprovações furam o silêncio</strong>
+          <small>Uma aprovação trava o agente; uma pergunta pode esperar.</small>
+        </span>
+        <input id="quietBypassApproval" type="checkbox" />
+      </label>
     </section>
 
     <section class="diagnostics" aria-label="Diagnóstico">

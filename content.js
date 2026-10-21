@@ -20,6 +20,20 @@
   const TITLE_MARK = '⚠ ';
   const MESSAGE_LIMIT = 300;
   const BANNER_ATTR = 'data-dsh-notifier-stale';
+  /** Rótulos de botão que aparecem no fim do texto do painel. */
+  const BUTTON_LABELS = [
+    'aprovar uma vez',
+    'aprovar sempre',
+    'aprovar',
+    'rejeitar',
+    'permitir',
+    'negar e parar',
+    'negar',
+    'cancelar',
+    'continuar',
+    'executar',
+    'não',
+  ];
 
   const settings = { enabled: true, onlyWhenUnfocused: false };
   /** Interações já avisadas nesta página, para não repetir a cada mutação. */
@@ -160,7 +174,25 @@
       }
     }
     if (text === '') text = element.textContent ?? '';
-    return text.replace(/\s+/g, ' ').trim().slice(0, MESSAGE_LIMIT);
+    return stripButtonLabels(text.replace(/\s+/g, ' ').trim()).slice(0, MESSAGE_LIMIT);
+  }
+
+  /**
+   * O texto do painel termina com os rótulos dos botões ("Aprovar",
+   * "Rejeitar"), que não dizem nada no toast. Removemos apenas do fim, para
+   * não comer palavras legítimas no meio da mensagem.
+   */
+  function stripButtonLabels(text) {
+    let result = text;
+    for (let pass = 0; pass < 8; pass += 1) {
+      const lower = result.toLowerCase();
+      const label = BUTTON_LABELS.find(
+        (candidate) => lower === candidate || lower.endsWith(` ${candidate}`),
+      );
+      if (label === undefined) break;
+      result = result.slice(0, result.length - label.length).trim();
+    }
+    return result === '' ? text : result;
   }
 
   function isAnswered(element) {

@@ -57,7 +57,8 @@ A revisão de atualização costuma ser mais rápida.
 
 | Risco | Mitigação |
 |---|---|
-| Rejeição por “permissão excessiva” | Acesso restrito a `127.0.0.1:3080` e `localhost:3080`, com justificativa explícita no formulário |
+| Rejeição por “permissão excessiva” | Acesso restrito a `127.0.0.1` e `localhost` (qualquer porta), com justificativa explícita no formulário |
 | Rejeição por screenshot enganoso | As capturas mostram a UI real (popup renderizado do próprio CSS) e a notificação real |
-| Extensão quebra quando o DSH muda a porta | Documentado no README e no item de listagem; ajuste em `content_scripts.matches` |
+| Extensão não casa com a porta do DSH | Não é mais um risco: `content_scripts.matches` cobre qualquer porta em `127.0.0.1` e `localhost` (o DSH Desktop sobe em porta aleatória) |
+| Lembrete virar spam | Máximo de três lembretes por pedido, cancelados ao responder ou ao fechar o toast |
 | DMCA/marca | O nome cita “DSH” como compatibilidade, não como afiliação; deixar claro no texto que é projeto independente |

@@ -39,13 +39,19 @@ jobs:
 
       - name: Checa a sintaxe dos scripts
         run: |
-          for file in background.js content.js popup.js; do
+          for file in background.js content.js popup.js quiet-hours.js; do
             node --check "$file"
             echo "ok $file"
           done
 
       - name: Roda os testes da extensão
         run: node test/content.test.mjs
+
+      - name: Roda os testes do service worker
+        run: node test/background.test.mjs
+
+      - name: Roda os testes do horário de silêncio
+        run: node test/quiet-hours.test.mjs
 
       - name: Checa a sintaxe do plugin de cliente
         run: node --check plugin/client/lib/client.js

@@ -41,7 +41,7 @@ PRIVACY
 The extension sends nothing to any server. No analytics, telemetry, account, or tracking. It only reads the panels of the local DeepSeek Harness page and stores two preferences in your own browser.
 
 REQUIREMENTS
-• DeepSeek Harness running locally at http://127.0.0.1:3080 (port configurable in the manifest).
+• DeepSeek Harness running locally at http://127.0.0.1 or http://localhost (any port, including DSH Desktop, which picks a free port).
 • A Manifest V3 capable Chrome.
 • On Windows, Chrome notifications allowed and Focus Assist off while you work.
 
@@ -70,10 +70,16 @@ This is the core purpose: show a native alert when the local DeepSeek Harness co
 Stores two local preferences (alerts on/off and the "only when unfocused" mode) with chrome.storage.local. Nothing is synced or sent to any server.
 ```
 
-**Site access `127.0.0.1:3080` / `localhost:3080`**
+**Site access `127.0.0.1` / `localhost`**
 
 ```
-The extension must observe the DOM of the local DeepSeek Harness page to detect when an approval, question, or plan-review panel is pending. Access is limited to these two local addresses; no other site is read or modified.
+The extension must observe the DOM of the local DeepSeek Harness page to detect when an approval, question, or plan-review panel is pending. Access is limited to these two local addresses, on any port; no other site is read or modified.
+```
+
+**`alarms`**
+
+```
+Re-shows a request that is still unanswered, at most three times, so a missed toast does not stay missed. No data leaves the browser.
 ```
 
 ## Data usage declaration

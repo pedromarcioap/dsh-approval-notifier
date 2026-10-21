@@ -47,7 +47,7 @@ PRIVACIDADE
 A extensão não envia nada para nenhum servidor. Não há análise, telemetria, conta ou rastreamento. Ela só lê os painéis da página local do DeepSeek Harness e guarda duas preferências no seu próprio navegador.
 
 REQUISITOS
-• DeepSeek Harness rodando localmente em http://127.0.0.1:3080 (porta configurável no manifest).
+• DeepSeek Harness rodando localmente em http://127.0.0.1 ou http://localhost (qualquer porta — inclusive o DSH Desktop, que escolhe uma porta livre).
 • Chrome com suporte a Manifest V3.
 • No Windows, notificações do Chrome liberadas e o Assistente de Foco desativado durante o uso.
 
@@ -76,10 +76,16 @@ A extensão tem uma única finalidade: avisar o usuário, por meio de uma notifi
 Guarda duas preferências locais (avisos ligados/desligados e o modo "só fora de foco") com chrome.storage.local. Nada é sincronizado nem enviado a servidores.
 ```
 
-**Acesso ao site `127.0.0.1:3080` / `localhost:3080` (content script)**
+**`alarms`**
 
 ```
-A extensão precisa observar o DOM da página local do DeepSeek Harness para detectar quando um painel de aprovação, pergunta ou revisão de plano está pendente. O acesso é restrito a esses dois endereços locais; nenhum outro site é lido ou modificado.
+Reexibe um pedido que continua sem resposta, no máximo três vezes, para que um toast perdido não fique perdido. Nenhum dado sai do navegador.
+```
+
+**Acesso ao site `127.0.0.1` / `localhost` (content script)**
+
+```
+A extensão precisa observar o DOM da página local do DeepSeek Harness para detectar quando um painel de aprovação, pergunta ou revisão de plano está pendente. O acesso é restrito a esses dois endereços locais, em qualquer porta; nenhum outro site é lido ou modificado.
 ```
 
 ## Declaração de uso de dados

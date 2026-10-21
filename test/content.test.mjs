@@ -378,5 +378,34 @@ scenario('áudio só toca depois de um gesto do usuário', () => {
   );
 });
 
+scenario('rótulos de botão saem do texto do toast', () => {
+  const page = createPage();
+  const runtime = createChrome();
+  page.state.panel = {
+    kind: 'approval',
+    key: '12',
+    answered: false,
+    text: 'Ferramenta pwsh quer executar npm test Aprovar Rejeitar',
+  };
+  load({ document: page.document, chrome: runtime.chrome });
+
+  const pending = messagesByType(runtime, 'interaction-pending');
+  assert(pending.length === 1, 'uma mensagem interaction-pending');
+  assert(
+    pending[0].text === 'Ferramenta pwsh quer executar npm test',
+    `rótulos removidos do fim: "${pending[0].text}"`,
+  );
+});
+
+scenario('texto só com rótulo não fica vazio', () => {
+  const page = createPage();
+  const runtime = createChrome();
+  page.state.panel = { kind: 'approval', key: '13', answered: false, text: 'Aprovar' };
+  load({ document: page.document, chrome: runtime.chrome });
+
+  const pending = messagesByType(runtime, 'interaction-pending');
+  assert(pending.length === 1 && pending[0].text === 'Aprovar', 'mantém o texto original como reserva');
+});
+
 const failed = results.filter((result) => !result.ok).length;
 console.log(`\n${results.length - failed}/${results.length} verificações passaram.`);

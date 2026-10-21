@@ -7,10 +7,10 @@ servidor, conta, análise de uso, telemetria ou rastreamento de qualquer tipo.
 
 ## O que a extensão acessa
 
-- **A página local do DeepSeek Harness** (`http://127.0.0.1:3080` e
-  `http://localhost:3080`). A extensão lê o DOM dessa página apenas para
-  identificar quando um painel de aprovação, pergunta ou revisão de plano está
-  pendente, e qual texto ele exibe. Nenhum outro site é acessado.
+- **A página local do DeepSeek Harness** (`http://127.0.0.1` e
+  `http://localhost`, em qualquer porta). A extensão lê o DOM dessa página
+  apenas para identificar quando um painel de aprovação, pergunta ou revisão de
+  plano está pendente, e qual texto ele exibe. Nenhum outro site é acessado.
 - **Preferências locais.** Duas configurações — avisos ligados/desligados e o
   modo “só quando a janela não estiver em foco” — ficam em
   `chrome.storage.local`, no seu próprio navegador.
@@ -37,7 +37,8 @@ service worker.
 |---|---|
 | `notifications` | Exibir o aviso nativo quando a conversa local espera uma decisão. |
 | `storage` | Guardar as duas preferências locais citadas acima. |
-| Acesso a `127.0.0.1:3080` / `localhost:3080` | Observar os painéis da página local do DeepSeek Harness. |
+| `alarms` | Reexibir um pedido que continua sem resposta (no máximo três lembretes). |
+| Acesso a `127.0.0.1` / `localhost` | Observar os painéis da página local do DeepSeek Harness, em qualquer porta. |
 
 ## Alterações
 
@@ -56,9 +57,9 @@ Dúvidas ou problemas: abra uma issue em
 This extension **does not collect, transmit, or sell personal data**. There is
 no server, account, usage analytics, telemetry, or tracking of any kind.
 
-- It reads the DOM of the local DeepSeek Harness page (`127.0.0.1:3080` and
-  `localhost:3080`) only to detect pending approval, question, or plan-review
-  panels.
+- It reads the DOM of the local DeepSeek Harness page (`127.0.0.1` and
+  `localhost`, on any port) only to detect pending approval, question, or
+  plan-review panels.
 - It stores two preferences (alerts on/off, "only when unfocused") in
   `chrome.storage.local` in your own browser.
 - Pending-request text and the last-notification timestamp live only in the
