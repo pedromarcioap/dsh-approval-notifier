@@ -1,0 +1,20 @@
+/* Prévia do popup: reaproveita popup.css, mas força o tema escuro
+   (o headless do Chrome abre em preferência clara). */
+:root {
+  --bg: #14161a;
+  --fg: #eceef2;
+  --muted: #9aa1ad;
+  --line: #2a2e36;
+  --accent: #e6a447;
+  --card: #1b1e24;
+}
+
+body.popup-body {
+  display: block;
+  width: 388px;
+  height: auto;
+  margin: 0;
+  padding: 14px;
+  background: var(--bg);
+  overflow: visible;
+}

@@ -85,6 +85,15 @@ pwsh -File tools/build-release.ps1  # gera dist/dsh-approval-notifier-<versão>.
 O workflow [`.github/workflows/test.yml`](.github/workflows/test.yml) roda esses
 testes a cada push e pull request.
 
+## Privacidade
+
+A extensão não coleta nem transmite dados. Detalhes em [PRIVACY.md](PRIVACY.md).
+
+## Publicação
+
+Materiais para a Chrome Web Store ficam em [store/](store/CHECKLIST.md) e os
+textos de lançamento em [marketing/](marketing/README.md).
+
 ## Licença
 
 MIT — veja [LICENSE](LICENSE).
