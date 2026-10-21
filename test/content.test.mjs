@@ -98,7 +98,7 @@ function createChrome({ enabled = true, onlyWhenUnfocused = false } = {}) {
  * Executa o content script num contexto isolado. Devolve gatilhos para
  * simular mutações do DOM e mudança de foco, como o navegador faria.
  */
-function load({ document, chrome }) {
+function load({ document, chrome, AudioContext: AudioCtor }) {
   let observerCallback = null;
   const windowListeners = new Map();
 
@@ -108,7 +108,7 @@ function load({ document, chrome }) {
     }),
     chrome,
     window: {
-      AudioContext: undefined,
+      AudioContext: AudioCtor,
       webkitAudioContext: undefined,
       addEventListener: (type, callback) => windowListeners.set(type, callback),
     },
@@ -133,6 +133,9 @@ function load({ document, chrome }) {
     },
     blur() {
       windowListeners.get('blur')?.();
+    },
+    gesture(type) {
+      windowListeners.get(type)?.();
     },
   };
 }
@@ -324,6 +327,53 @@ scenario('modo "só fora de foco"', () => {
   assert(
     messagesByType(runtime, 'interaction-pending').some((m) => m.key === '10'),
     'avisa quando a janela perde o foco',
+  );
+});
+
+scenario('áudio só toca depois de um gesto do usuário', () => {
+  const page = createPage();
+  const runtime = createChrome();
+  let created = 0;
+  let plays = 0;
+
+  class FakeAudioContext {
+    constructor() {
+      created += 1;
+      this.state = 'suspended';
+      this.currentTime = 0;
+      this.destination = {};
+    }
+    resume() {
+      this.state = 'running';
+      return Promise.resolve();
+    }
+    createOscillator() {
+      const node = { type: '', frequency: { value: 0 }, start: () => { plays += 1; }, stop: () => {} };
+      node.connect = () => node;
+      return node;
+    }
+    createGain() {
+      const node = { gain: { setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} } };
+      node.connect = () => node;
+      return node;
+    }
+  }
+
+  page.state.panel = { kind: 'approval', key: '11', answered: false, text: 'Pedido' };
+  const script = load({
+    document: page.document,
+    chrome: runtime.chrome,
+    AudioContext: FakeAudioContext,
+  });
+
+  assert(created === 0, 'nenhum contexto criado sem gesto (evita o aviso do Chrome)');
+  assert(plays === 0, 'nenhum som tentado sem gesto');
+
+  script.gesture('pointerdown');
+  assert(created === 1, 'contexto criado dentro do gesto');
+  assert(
+    messagesByType(runtime, 'interaction-pending').length === 1,
+    'toast/aviso continuou valendo mesmo sem áudio',
   );
 });
 

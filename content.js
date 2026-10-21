@@ -127,7 +127,7 @@
     titleDirty = false;
   }
 
-  function beep() {
+  function armAudio() {
     try {
       const Ctor = window.AudioContext || window.webkitAudioContext;
       if (!Ctor) return;
@@ -135,6 +135,16 @@
       if (audioContext.state === 'suspended') {
         void audioContext.resume().catch(() => {});
       }
+    } catch {
+      audioContext = null;
+    }
+  }
+
+  function beep() {
+    // Sem um gesto do usuário na página o Chrome mantém o contexto suspenso e
+    // registra um aviso no console; nesse caso ficamos só com o toast.
+    if (audioContext === null || audioContext.state !== 'running') return;
+    try {
       const start = audioContext.currentTime;
       [880, 1180].forEach((frequency, index) => {
         const oscillator = audioContext.createOscillator();
@@ -150,8 +160,14 @@
         oscillator.stop(at + 0.18);
       });
     } catch {
-      /* áudio bloqueado por política de autoplay — seguimos com o toast */
+      /* contexto fechado ou áudio bloqueado — o toast continua valendo */
     }
+  }
+
+  // O áudio do Chrome só é liberado dentro de um gesto do usuário, então
+  // preparamos o contexto no primeiro clique/tecla e o reativamos se preciso.
+  for (const gesture of ['pointerdown', 'keydown']) {
+    window.addEventListener(gesture, armAudio, { capture: true, passive: true });
   }
 
   /* ------------------------------------------------------------------ */

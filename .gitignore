@@ -5,6 +5,9 @@ node_modules/
 *.crx
 *.pem
 
+# Ferramentas locais (gh CLI baixado para publicar)
+.tools/
+
 # Sistema operacional
 Thumbs.db
 desktop.ini
