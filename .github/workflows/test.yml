@@ -52,3 +52,6 @@ jobs:
 
       - name: Roda os testes do plugin nativo
         run: node plugin/test/client.test.mjs
+
+      - name: Confere o que seria publicado nos pacotes do plugin
+        run: node plugin/tools/check-package.mjs
