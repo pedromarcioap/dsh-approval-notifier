@@ -42,5 +42,10 @@
     "bundle": {
       "patch": "./cordis.patch.yml"
     }
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
   }
 }

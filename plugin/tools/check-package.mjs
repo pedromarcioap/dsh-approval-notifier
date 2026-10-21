@@ -124,6 +124,16 @@ if (client) {
     if (!json.files.includes('lib/client.js')) {
       fail('client: lib/client.js fora de "files" — o navegador não teria o plugin');
     }
+    // O carregador resolve a metade browser por `<pacote>/client`; sem esse
+    // mapa de exports o módulo não é servido e o plugin falha em silêncio.
+    const clientEntry = json.exports?.['./client'];
+    if (clientEntry === undefined) {
+      fail('client: exports["./client"] ausente — o DSH não encontraria lib/client.js');
+    } else if (!existsSync(join(dir, String(clientEntry)))) {
+      fail(`client: exports["./client"] aponta para ${clientEntry}, que não existe`);
+    } else {
+      ok('client: exports["./client"] declarado');
+    }
     ok('client: dsh.client declarado para a web');
   }
 
