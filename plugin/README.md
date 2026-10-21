@@ -67,9 +67,39 @@ Cobre: ausência de pendência, os três tipos de título, deduplicação por ch
 troca de pedido, fechamento ao resolver, modo "só fora de foco" (inclusive o
 aviso ao perder o foco), permissão negada e snapshot com várias sessões.
 
+## Publicação no npm
+
+São dois pacotes, e a ordem importa — o bundle depende do cliente, então o
+cliente precisa existir primeiro no registro.
+
+```powershell
+npm login                      # uma vez, no seu terminal
+
+cd plugin/client
+npm publish --access public    # dsh-plugin-approval-notifier-client@0.1.0
+
+cd ..
+npm publish --access public    # dsh-plugin-approval-notifier@0.1.0
+```
+
+Antes de publicar, confira o que entraria no pacote:
+
+```powershell
+npm pack --dry-run --json
+```
+
+Depois de publicado, o usuário instala com:
+
+```powershell
+dsh plugin add dsh-plugin-approval-notifier@0.1.0
+```
+
 ## Estado
 
-O plugin ainda **não está publicado no npm**. Para instalar hoje seria preciso
-apontar para o repositório e ter os dois pacotes resolvidos no profile. A
-publicação (`npm publish` nos dois pacotes) é o próximo passo antes de submeter
-aos catálogos da comunidade.
+Código, metadados, licença e testes estão prontos, e o conteúdo dos dois
+pacotes foi conferido com `npm pack --dry-run`: bundle com `cordis.patch.yml`,
+`lib/index.js`, README e LICENSE; cliente com `lib/client.js`, `lib/index.js`,
+README e LICENSE.
+
+Falta apenas o `npm publish`, que exige a sua conta — o registro exige
+autenticação e eu não tenho (nem devo ter) a sua credencial.

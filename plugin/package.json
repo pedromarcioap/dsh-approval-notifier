@@ -7,15 +7,34 @@
   "files": [
     "lib/index.js",
     "cordis.patch.yml",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "keywords": [
     "dsh-plugin",
     "deepseek-harness",
     "notifications",
-    "approval"
+    "approval",
+    "notification",
+    "desktop"
   ],
   "license": "MIT",
+  "author": "Pedro Marcio",
+  "homepage": "https://github.com/pedromarcioap/dsh-approval-notifier#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedromarcioap/dsh-approval-notifier.git",
+    "directory": "plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/pedromarcioap/dsh-approval-notifier/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "dsh-plugin-approval-notifier-client": "0.1.0"
   },

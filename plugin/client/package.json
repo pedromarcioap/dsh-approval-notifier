@@ -6,9 +6,30 @@
   "main": "lib/index.js",
   "files": [
     "lib/index.js",
-    "lib/client.js"
+    "lib/client.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "notifications",
+    "approval"
   ],
   "license": "MIT",
+  "author": "Pedro Marcio",
+  "homepage": "https://github.com/pedromarcioap/dsh-approval-notifier#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedromarcioap/dsh-approval-notifier.git",
+    "directory": "plugin/client"
+  },
+  "bugs": {
+    "url": "https://github.com/pedromarcioap/dsh-approval-notifier/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "dsh": {
     "client": {
       "inject": [
