@@ -72,7 +72,7 @@ window.__ModuleLoader__.load({
       }
     }
 
-    function createNotifier(options, state) {
+    function createNotifier(options, state, log) {
       function supported() {
         return typeof Notification !== "function";
       }
@@ -90,6 +90,12 @@ window.__ModuleLoader__.load({
 
       function open(kind) {
         markTitle(true);
+        const permission = supported()
+          ? "sem-api"
+          : typeof Notification.permission === "string"
+            ? Notification.permission
+            : "desconhecida";
+        log("tentando notificar:", kind, "| permissão:", permission);
         // Fallback universal: o selo no título não depende de permissão.
         if (supported() || Notification.permission !== "granted") return null;
         try {
@@ -133,14 +139,30 @@ window.__ModuleLoader__.load({
      */
     function apply(ctx, config) {
       const options = { onlyWhenUnfocused: config?.onlyWhenUnfocused === true };
+      // Diagnóstico silencioso por padrão: ligue com `debug: true` na config
+      // (ou inspecione `window.__dshApprovalNotifier`).
+      const debug = config?.debug === true;
+      const log = (...args) => {
+        if (!debug) return;
+        try {
+          console.info("[approval-notifier]", ...args);
+        } catch {
+          /* console indisponível */
+        }
+      };
       const source = ctx.uiSession.sessionStatus;
       const state = { key: null, shown: false, notification: null };
-      const notifier = createNotifier(options, state);
+      const notifier = createNotifier(options, state, log);
 
       notifier.requestPermission();
 
       function sync() {
         const pending = findPending(source.getSnapshot());
+
+        log(
+          "estado:",
+          pending === null ? "sem pendencia" : "pendencia " + pending.kind,
+        );
 
         if (pending === null) {
           state.key = null;
@@ -179,6 +201,19 @@ window.__ModuleLoader__.load({
           window.removeEventListener("focus", sync);
         };
       }, "approval-notifier: session status");
+
+      // Diagnóstico: permite confirmar pelo DevTools se o plugin carregou e o
+      // que ele vê no estado das sessões.
+      try {
+        globalThis.__dshApprovalNotifier = {
+          version: "0.1.0",
+          sessions: () => source.getSnapshot()?.size ?? 0,
+          lastSync: () => state.key,
+        };
+        log("plugin carregado; sessões:", source.getSnapshot()?.size ?? 0);
+      } catch {
+        /* console indisponível: seguir sem diagnóstico */
+      }
     }
 
     exports.apply = apply;

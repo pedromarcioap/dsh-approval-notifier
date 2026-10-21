@@ -51,7 +51,22 @@ insere no profile.
   name: 'dsh-plugin-approval-notifier-client'
   config:
     onlyWhenUnfocused: true   # padrão: false
+    debug: false              # padrão: false (liga logs no console)
 ```
+
+Com `debug: true`, o plugin registra no console do cliente o que ele vê a cada
+mudança de estado. Sem o flag, o único ponto de inspeção é
+`window.__dshApprovalNotifier` no DevTools, que existe sempre e não polui o log.
+
+### Se não funcionar
+
+O modo de falha é **silencioso**: sem o mapa `exports` com `"./client"` no
+`package.json`, o carregador do DSH não acha `lib/client.js` e não avisa. O
+validador `plugin/tools/check-package.mjs` cobre isso — se ele passar, o
+caminho de carregamento está correto.
+
+Para confirmar no app: abra o DevTools (`Ctrl+Shift+I`) e digite
+`window.__dshApprovalNotifier`. `undefined` significa que o plugin não carregou.
 
 ## Testes
 
