@@ -1,0 +1,12 @@
+{
+  "$schema": "../schema/plugin.schema.json",
+  "id": "pedromarcioap/dsh-approval-notifier/plugin",
+  "name": "dsh-plugin-approval-notifier",
+  "repository": "https://github.com/pedromarcioap/dsh-approval-notifier",
+  "category": "notify",
+  "description": {
+    "en": "Native browser notification when DeepSeek Harness waits for a tool approval, an answer to a question, or a plan review. Subscribes to the client session status snapshot and changes nothing on the Host.",
+    "zh": "当 DeepSeek Harness 等待工具审批、问题回答或计划复核时，发送浏览器原生通知。订阅客户端会话状态快照，不修改宿主。"
+  },
+  "added": "2026-10-20"
+}
