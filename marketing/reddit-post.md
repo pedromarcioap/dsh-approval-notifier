@@ -3,45 +3,56 @@
 **Título**
 
 ```
-Free & open source: a Windows toast the moment DeepSeek Harness waits on your approval
+Free & open source: a native toast the moment DeepSeek Harness waits on your approval
 ```
 
 **Corpo**
 
 ```
 I kept walking away during long runs and coming back to an agent that had been
-blocked for ten minutes waiting for a decision. So I built a small notifier.
+blocked for ten minutes waiting for a decision. So I built two things for it: a
+Chrome extension and a native DSH plugin.
 
-**What it does**
+**What they do**
 
-- Watches the three panels that take over the composer — tool approval,
-  `ask_user_question`, and plan review — and fires a native notification the
-  moment one appears.
-- Clicking the toast focuses the DSH tab.
+- Watch the three states that block a turn — tool approval, `ask_user_question`,
+  and plan review — and fire a native notification the moment one appears.
+- Clicking the toast focuses the chat.
 - One notification per request, and it disappears when you answer.
-- Badge on the icon showing how many requests are waiting.
+- Badge showing how many requests are waiting.
 - Optional reminder every ~90s (max 3) if nobody answers.
 - Quiet hours (off by default): alerts are held and delivered when the window
   ends — and dropped if you answer first. Approvals can bypass it, since they
   block the agent.
-- Works on any port of 127.0.0.1 / localhost, so it doesn't break when the app
-  picks a random one.
 
-**How it works**
+**Two ways to run it**
 
-It doesn't scrape CSS classes. Each panel publishes a stable attribute
-(`data-approval-key`, `data-question-key`, `data-plan-review-key`), so a
-restyle doesn't silently break detection. There are 126 automated checks in CI
-(fake DOM, fake Chrome APIs, no browser needed).
+*Chrome extension* — for when you use the DSH web UI. It doesn't scrape CSS
+classes: each panel publishes a stable attribute (`data-approval-key`,
+`data-question-key`, `data-plan-review-key`), so a restyle doesn't silently
+break detection. Works on any port of 127.0.0.1 / localhost, so it survives the
+app picking a random one.
+
+*Native plugin* — for the desktop app, or if you'd rather not run an extension.
+It subscribes to the session status snapshot instead of the DOM, so there is
+nothing to detect visually.
 
 **Install**
 
-Not on the Chrome Web Store yet — the submission is pending review. For now:
+The extension isn't on the Chrome Web Store yet. Honestly, I wanted to know if
+there's interest before going through the review process — the code is MIT and
+ready. **If people here want it, say so and I'll publish it to the Web Store
+and share the link.** Until then:
 
 1. clone the repo
 2. `chrome://extensions` → enable Developer mode
 3. **Load unpacked** → pick the extension folder
 4. reload the DSH tab (F5)
+
+The plugin's browser half is already published on npm
+(`dsh-plugin-approval-notifier-client`); the bundle that wires it into a profile
+is still in npm's review queue, so `dsh plugin add` won't work until that clears.
+I'll update this thread when it does.
 
 **It's free**
 
@@ -49,8 +60,7 @@ MIT licensed. No account, no telemetry, no paid tier, nothing leaves your
 machine. It's a notifier, not an approver: it never answers anything for you —
 the decision stays in the chat.
 
-There's also a native plugin version for people who'd rather not run a browser
-extension (it subscribes to the session status snapshot instead of the DOM).
+126 automated checks run in CI (fake DOM, fake Chrome APIs, simulated clock).
 
 Feedback welcome, especially: which other states deserve a notification?
 Subagent failures and long-task completion are the two I'm unsure about.
@@ -62,7 +72,6 @@ GitHub: https://github.com/pedromarcioap/dsh-approval-notifier
 
 - Confira as regras de autopromoção do subreddit (alguns exigem flair ou
   participação prévia).
-- Deixe claro na primeira linha que você é o autor — o texto já faz isso
-  ("I built"), não esconda.
-- Se a Chrome Web Store liberar a extensão, atualize o link de instalação na
-  primeira hora: é a pergunta mais provável nos comentários.
+- A primeira linha deixa claro que você é o autor ("I built") — mantenha.
+- Se alguém pedir a extensão na Web Store, cumpra: publique e responda no mesmo
+  thread. É o tipo de promessa que, não cumprida, queima o canal.
